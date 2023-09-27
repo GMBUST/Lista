@@ -15,7 +15,6 @@ func crearNodo[T any](dato T) *nodo[T] {
 	return nuevoNodo
 }
 
-
 // Lista:
 
 // Implementación de la lista.
@@ -34,29 +33,65 @@ func CrearListaEnlazada[T any]() Lista[T] {
 func (lista *listaEnlazada[T]) EstaVacia() bool {
 	return lista.primero == nil && lista.ultimo == nil && lista.largo == 0
 }
+func (lista listaEnlazada[T]) validarVacio() {
+	if lista.EstaVacia() {
+		panic("La lista esta vacia")
+	}
+}
 
 // InsertarPrimero inserta al inicio de la lista el elemento pasado por argumento.
-func (lista *listaEnlazada[T]) InsertarPrimero(T) {
-
+func (lista *listaEnlazada[T]) InsertarPrimero(elem T) {
+	nuevoNodo := &nodo[T]{
+		dato:      elem,
+		siguiente: nil,
+	}
+	if lista.EstaVacia() {
+		lista.primero = nuevoNodo
+		lista.ultimo = nuevoNodo
+		lista.largo++
+		return
+	}
+	lista.primero.siguiente = lista.primero
+	lista.primero = nuevoNodo
+	lista.largo++
 }
 
 // InsertarUltimo inserta al final de la lista el elemento pasado por argumento.
-func (lista *listaEnlazada[T]) InsertarUltimo(T) {
+func (lista *listaEnlazada[T]) InsertarUltimo(elem T) {
+	nuevoNodo := &nodo[T]{
+		dato:      elem,
+		siguiente: nil,
+	}
+	if lista.EstaVacia() {
+		lista.primero = nuevoNodo
+		lista.ultimo = nuevoNodo
+		lista.largo++
+		return
+	}
+	lista.ultimo.siguiente = nuevoNodo
+	lista.ultimo = nuevoNodo
+	lista.largo++
 
 }
 
 // BorrarPrimero elimina el primer elemento de la lista y retorna su valor.
 func (lista *listaEnlazada[T]) BorrarPrimero() T {
-
+	auxPrimero := lista.primero.dato
+	lista.validarVacio()
+	lista.primero = lista.primero.siguiente
+	lista.largo--
+	return auxPrimero
 }
 
 // VerPrimero muestra el valor del primer elemento de la lista.
 func (lista *listaEnlazada[T]) VerPrimero() T {
+	lista.validarVacio()
 	return lista.primero.dato
 }
 
 // VerUltimo muestra el valor del último elemento de la lista.
 func (lista *listaEnlazada[T]) VerUltimo() T {
+	lista.validarVacio()
 	return lista.ultimo.dato
 }
 
@@ -68,15 +103,14 @@ func (lista *listaEnlazada[T]) Largo() int {
 // Iterar recorre internamente la lista y aplica una función 'visitar' la cual
 // debe cumplir que: devuelve 'true' si desea seguir iterando y 'false' en caso contrario.
 func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
-
+	return
 }
 
 // Iterador devuelve un elemento IteradorLista el cual es un iterador externo de la lista.
 // Las primitivas asociadas al mismo se encuentran más adelante.
 func (lista *listaEnlazada[T]) Iterador() IteradorLista[T] {
-
+	return nil
 }
-
 
 // Iterador externo de la lista:
 
@@ -87,28 +121,28 @@ type iteradorLista[T any] struct {
 }
 
 // VerActual devuelve el dato contenido en el elemento la lista en el que se encuentra el iterador.
-func (iter *iteradorLista[T]) VerActual() T {
+// func (iter *iteradorLista[T]) VerActual() T {
+// 	return
+// }
 
-}
+// // HaySiguiente indica si hay algún elemento para ver.
+// func (iter *iteradorLista[T]) HaySiguiente() bool {
 
-// HaySiguiente indica si hay algún elemento para ver.
-func (iter *iteradorLista[T]) HaySiguiente() bool {
+// }
 
-}
+// // Siguiente hace que el iterador avance al siguiente elemento de la lista.
+// func (iter *iteradorLista[T]) Siguiente() {
 
-// Siguiente hace que el iterador avance al siguiente elemento de la lista.
-func (iter *iteradorLista[T]) Siguiente() {
+// }
 
-}
+// // Insertar inserta un elemento nuevo en la lista entre el elemento en el que se encuentra el iterador y el anterior a ese.
+// // Luego de insertarlo el iterador se posiciona sobre el elemento insertado.
+// func (iter *iteradorLista[T]) Insertar(T) {
 
-// Insertar inserta un elemento nuevo en la lista entre el elemento en el que se encuentra el iterador y el anterior a ese.
-// Luego de insertarlo el iterador se posiciona sobre el elemento insertado.
-func (iter *iteradorLista[T]) Insertar(T) {
+// }
 
-}
+// // Borrar elimina el elemento de la lista sobre el que se encuentra el iterador.
+// // Luego de borrarlo el iterador se posiciona sobre el elemento siguiente al elemento que se borra de la lista.
+// func (iter *iteradorLista[T]) Borrar() T {
 
-// Borrar elimina el elemento de la lista sobre el que se encuentra el iterador.
-// Luego de borrarlo el iterador se posiciona sobre el elemento siguiente al elemento que se borra de la lista.
-func (iter *iteradorLista[T]) Borrar() T {
-
-}
+// }
