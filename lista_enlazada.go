@@ -103,7 +103,13 @@ func (lista *listaEnlazada[T]) Largo() int {
 // Iterar recorre internamente la lista y aplica una función 'visitar' la cual
 // debe cumplir que: devuelve 'true' si desea seguir iterando y 'false' en caso contrario.
 func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
-	return
+	punteroIter := lista.primero
+	for punteroIter != nil {
+		if !visitar(punteroIter.dato) {
+			break //salgo del while y termina la funcion
+		}
+		punteroIter = punteroIter.siguiente
+	}
 }
 
 // Iterador devuelve un elemento IteradorLista el cual es un iterador externo de la lista.
