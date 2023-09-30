@@ -33,7 +33,8 @@ func CrearListaEnlazada[T any]() Lista[T] {
 func (lista *listaEnlazada[T]) EstaVacia() bool {
 	return lista.primero == nil && lista.ultimo == nil && lista.largo == 0
 }
-func (lista listaEnlazada[T]) validarVacio() {
+
+func (lista *listaEnlazada[T]) validarVacio() {
 	if lista.EstaVacia() {
 		panic("La lista esta vacia")
 	}
@@ -41,10 +42,8 @@ func (lista listaEnlazada[T]) validarVacio() {
 
 // InsertarPrimero inserta al inicio de la lista el elemento pasado por argumento.
 func (lista *listaEnlazada[T]) InsertarPrimero(elem T) {
-	nuevoNodo := &nodo[T]{
-		dato:      elem,
-		siguiente: nil,
-	}
+	nuevoNodo := crearNodo[T](elem)
+
 	if lista.EstaVacia() {
 		lista.primero = nuevoNodo
 		lista.ultimo = nuevoNodo
@@ -115,40 +114,61 @@ func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
 // Iterador devuelve un elemento IteradorLista el cual es un iterador externo de la lista.
 // Las primitivas asociadas al mismo se encuentran más adelante.
 func (lista *listaEnlazada[T]) Iterador() IteradorLista[T] {
-	return nil
+	nuevoIter := new(iteradorLista[T])
+	nuevoIter.actual = lista.primero
+	nuevoIter.largoLista = &lista.largo
+	return nuevoIter
 }
 
 // Iterador externo de la lista:
 
 // Implementación del iterador.
 type iteradorLista[T any] struct {
-	anterior *nodo[T]
-	actual   *nodo[T]
+	anterior   *nodo[T]
+	actual     *nodo[T]
+	largoLista *int
 }
 
 // VerActual devuelve el dato contenido en el elemento la lista en el que se encuentra el iterador.
-// func (iter *iteradorLista[T]) VerActual() T {
-// 	return
-// }
+func (iter *iteradorLista[T]) VerActual() T {
+	return iter.actual.dato
+}
 
-// // HaySiguiente indica si hay algún elemento para ver.
-// func (iter *iteradorLista[T]) HaySiguiente() bool {
+// HaySiguiente indica si hay algún elemento para ver.
+func (iter *iteradorLista[T]) HaySiguiente() bool {
+	return iter == nil
+}
 
-// }
+// Siguiente hace que el iterador avance al siguiente elemento de la lista.
+func (iter *iteradorLista[T]) Siguiente() {
+	iter.anterior = iter.actual
+	iter.actual = iter.actual.siguiente
+}
 
-// // Siguiente hace que el iterador avance al siguiente elemento de la lista.
-// func (iter *iteradorLista[T]) Siguiente() {
+// Insertar inserta un elemento nuevo en la lista entre el elemento en el que se encuentra el iterador y el anterior a ese.
+// Luego de insertarlo el iterador se posiciona sobre el elemento insertado.
+func (iter *iteradorLista[T]) Insertar(elem T) {
+	nuevoNodo := crearNodo[T](elem)
 
-// }
+	if iter.anterior != nil {
+		iter.anterior.siguiente = nuevoNodo
+	}
 
-// // Insertar inserta un elemento nuevo en la lista entre el elemento en el que se encuentra el iterador y el anterior a ese.
-// // Luego de insertarlo el iterador se posiciona sobre el elemento insertado.
-// func (iter *iteradorLista[T]) Insertar(T) {
+	nuevoNodo.siguiente = iter.actual
+	iter.actual = nuevoNodo
+	*iter.largoLista++
+}
 
-// }
+// Borrar elimina el elemento de la lista sobre el que se encuentra el iterador.
+// Luego de borrarlo el iterador se posiciona sobre el elemento siguiente al elemento que se borra de la lista.
+func (iter *iteradorLista[T]) Borrar() T {
+	auxNodo := iter.actual
 
-// // Borrar elimina el elemento de la lista sobre el que se encuentra el iterador.
-// // Luego de borrarlo el iterador se posiciona sobre el elemento siguiente al elemento que se borra de la lista.
-// func (iter *iteradorLista[T]) Borrar() T {
+	if iter.anterior != nil {
+		iter.anterior.siguiente = iter.actual
+	}
+	iter.actual = auxNodo.siguiente
+	*iter.largoLista--
 
-// }
+	return auxNodo.dato
+}
