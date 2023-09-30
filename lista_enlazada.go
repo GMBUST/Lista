@@ -75,8 +75,8 @@ func (lista *listaEnlazada[T]) InsertarUltimo(elem T) {
 
 // BorrarPrimero elimina el primer elemento de la lista y retorna su valor.
 func (lista *listaEnlazada[T]) BorrarPrimero() T {
-	auxPrimero := lista.primero.dato
 	lista.validarVacio()
+	auxPrimero := lista.primero.dato
 	lista.primero = lista.primero.siguiente
 	lista.largo--
 	return auxPrimero
@@ -136,7 +136,7 @@ func (iter *iteradorLista[T]) VerActual() T {
 
 // HaySiguiente indica si hay algún elemento para ver.
 func (iter *iteradorLista[T]) HaySiguiente() bool {
-	return iter == nil
+	return iter.actual != nil
 }
 
 // Siguiente hace que el iterador avance al siguiente elemento de la lista.
