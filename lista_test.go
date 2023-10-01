@@ -145,3 +145,9 @@ func InsertarUltimoYBorrar(t *testing.T) {
 // func TestVolumen(t *testing.T) {
 
 // }
+// func ListaFloats(t *testing.T) {
+
+// }
+// func ListaStrings(t *testing.T) {
+
+// }
