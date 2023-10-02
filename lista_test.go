@@ -125,7 +125,7 @@ func VerPrimeroYUltimo(t *testing.T) {
 	require.EqualValues(t, 3, lista.VerUltimo())
 }
 
-func InsertarPrimeroYBorrar(t *testing.T) {
+func TestInsertarPrimeroYBorrar(t *testing.T) {
 	t.Log("Insertamos el dato en la primera posicion, borramos y vemos si cumple con el orden deseado")
 	lista := TDALista.CrearListaEnlazada[int]()
 	lista.InsertarPrimero(1)
@@ -135,7 +135,7 @@ func InsertarPrimeroYBorrar(t *testing.T) {
 	require.EqualValues(t, 2, lista.VerPrimero())
 	require.EqualValues(t, 1, lista.VerUltimo())
 }
-func InsertarUltimoYBorrar(t *testing.T) {
+func TestInsertarUltimoYBorrar(t *testing.T) {
 	t.Log("Insertamos el dato en la Ultima posicion, borramos y vemos si cumple con el orden desado")
 	lista := TDALista.CrearListaEnlazada[int]()
 	lista.InsertarUltimo(1)
@@ -179,7 +179,7 @@ func TestVolumen(t *testing.T) {
 	require.True(t, lista.EstaVacia())
 	require.Equal(t, 0, lista.Largo())
 }
-func ListaFloats(t *testing.T) {
+func TestListaFloats(t *testing.T) {
 	t.Log("Insertamos a la lista floats ")
 	lista := TDALista.CrearListaEnlazada[float32]()
 	lista.InsertarPrimero(1.13)
@@ -195,7 +195,7 @@ func ListaFloats(t *testing.T) {
 	require.Panics(t, func() { lista.BorrarPrimero() })
 	require.Equal(t, 0, lista.Largo())
 }
-func ListaStrings(t *testing.T) {
+func TestListaStrings(t *testing.T) {
 	t.Log("Insertamos a la lista strings")
 	lista := TDALista.CrearListaEnlazada[string]()
 	lista.InsertarPrimero("asd")
@@ -214,12 +214,13 @@ func ListaStrings(t *testing.T) {
 	require.Equal(t, 0, lista.Largo())
 }
 
-func IteradorInsertarAlFinal(t *testing.T) {
+// ----Tests iterador externo----
+func TestIteradorInsertarAlFinal(t *testing.T) {
 	t.Log("Inserto al final un elemento cuando el iterador esta al final")
 	lista := TDALista.CrearListaEnlazada[int]()
-	lista.InsertarPrimero(1)
-	lista.InsertarPrimero(2)
-	lista.InsertarPrimero(3)
+	lista.InsertarUltimo(1)
+	lista.InsertarUltimo(2)
+	lista.InsertarUltimo(3)
 
 	iter := lista.Iterador()
 	require.True(t, iter.HaySiguiente())
@@ -232,21 +233,24 @@ func IteradorInsertarAlFinal(t *testing.T) {
 
 	require.True(t, iter.HaySiguiente())
 	require.Equal(t, 3, iter.VerActual())
+	iter.Siguiente()
+
 	//Inserto al final del iterador
 	iter.Insertar(4)
-	require.Equal(t, 3, iter.VerActual())
+	require.Equal(t, 4, iter.VerActual())
 	require.True(t, iter.HaySiguiente())
 
 	iter.Siguiente()
+
 	require.False(t, iter.HaySiguiente())
 }
 
-func IteradorInsertarEnElMedio(t *testing.T) {
-	t.Log("Inserto al final un elemento cuando el iterador esta al final")
+func TestIteradorInsertarEnElMedio(t *testing.T) {
+	t.Log("Inserto en el medio y comprobamos que haya sido entre el anterior y el actual")
 	lista := TDALista.CrearListaEnlazada[int]()
-	lista.InsertarPrimero(1)
-	lista.InsertarPrimero(2)
-	lista.InsertarPrimero(3)
+	lista.InsertarUltimo(1)
+	lista.InsertarUltimo(2)
+	lista.InsertarUltimo(3)
 
 	iter := lista.Iterador()
 	require.True(t, iter.HaySiguiente())
@@ -256,7 +260,7 @@ func IteradorInsertarEnElMedio(t *testing.T) {
 	require.True(t, iter.HaySiguiente())
 	require.Equal(t, 2, iter.VerActual())
 
-	//Inserto en el medio (entre el anterior y el actual
+	//Inserto en el medio
 	iter.Insertar(100)
 	require.Equal(t, 100, iter.VerActual())
 
@@ -268,12 +272,12 @@ func IteradorInsertarEnElMedio(t *testing.T) {
 	require.True(t, iter.HaySiguiente())
 	require.Equal(t, 3, iter.VerActual())
 }
-func RemoverElementoInicioIterador(t *testing.T) {
+func TestRemoverElementoInicioIterador(t *testing.T) {
 	t.Log("Remover elemento cuando el iterador es creado")
 	lista := TDALista.CrearListaEnlazada[int]()
-	lista.InsertarPrimero(1)
-	lista.InsertarPrimero(2)
-	lista.InsertarPrimero(3)
+	lista.InsertarUltimo(1)
+	lista.InsertarUltimo(2)
+	lista.InsertarUltimo(3)
 
 	iter := lista.Iterador()
 	iter.Borrar()
@@ -283,36 +287,41 @@ func RemoverElementoInicioIterador(t *testing.T) {
 
 	require.Equal(t, 3, iter.VerActual())
 }
-func RemoverElementoFinalIterador(t *testing.T) {
+func TestRemoverElementoFinalIterador(t *testing.T) {
 	t.Log("Remover elemento cuando el iterador es llega a su fin")
 	lista := TDALista.CrearListaEnlazada[int]()
-	lista.InsertarPrimero(1)
-	lista.InsertarPrimero(2)
-	lista.InsertarPrimero(3)
+	lista.InsertarUltimo(1)
+	lista.InsertarUltimo(2)
+	lista.InsertarUltimo(3)
 
 	iter := lista.Iterador()
 
 	require.Equal(t, 1, iter.VerActual())
 	iter.Siguiente()
 	iter.Siguiente()
-	iter.Siguiente()
 	require.Equal(t, 3, iter.VerActual())
 	iter.Borrar()
+	require.False(t, iter.HaySiguiente())
+	//require.Equal(t, 2, iter.VerActual())
+	iter = lista.Iterador()
+	require.Equal(t, 1, iter.VerActual())
+	iter.Siguiente()
 	require.Equal(t, 2, iter.VerActual())
+	iter.Siguiente()
 }
-func RemoverElementoDelMedio(t *testing.T) {
+func TestRemoverElementoDelMedio(t *testing.T) {
 	t.Log("Remover elemento cuando esta en el medio y verificar que no esta")
 	lista := TDALista.CrearListaEnlazada[int]()
-	lista.InsertarPrimero(1)
-	lista.InsertarPrimero(2)
-	lista.InsertarPrimero(3)
+	lista.InsertarUltimo(1)
+	lista.InsertarUltimo(2)
+	lista.InsertarUltimo(3)
 
 	iter := lista.Iterador()
 
 	require.Equal(t, 1, iter.VerActual())
 	iter.Siguiente()
 	iter.Borrar()
-	require.Equal(t, 1, iter.VerActual())
-	iter.Siguiente()
 	require.Equal(t, 3, iter.VerActual())
+	iter.Siguiente()
+	require.False(t, iter.HaySiguiente())
 }
