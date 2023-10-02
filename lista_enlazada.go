@@ -50,7 +50,7 @@ func (lista *listaEnlazada[T]) InsertarPrimero(elem T) {
 		lista.largo++
 		return
 	}
-	lista.primero.siguiente = lista.primero
+	nuevoNodo.siguiente = lista.primero
 	lista.primero = nuevoNodo
 	lista.largo++
 }
@@ -79,6 +79,10 @@ func (lista *listaEnlazada[T]) BorrarPrimero() T {
 	auxPrimero := lista.primero.dato
 	lista.primero = lista.primero.siguiente
 	lista.largo--
+
+	if lista.largo == 0 {
+		lista.ultimo = nil
+	}
 	return auxPrimero
 }
 
@@ -105,7 +109,7 @@ func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
 	punteroIter := lista.primero
 	for punteroIter != nil {
 		if !visitar(punteroIter.dato) {
-			break //salgo del while y termina la funcion
+			break
 		}
 		punteroIter = punteroIter.siguiente
 	}
