@@ -39,32 +39,30 @@ func (lista *listaEnlazada[T]) validarVacio() {
 		panic("La lista esta vacia")
 	}
 }
+func (lista *listaEnlazada[T]) insertarSiVacio(nuevoNodo *nodo[T]) {
+	lista.primero = nuevoNodo
+	lista.ultimo = nuevoNodo
+	lista.largo++
+}
 
 // InsertarPrimero inserta al inicio de la lista el elemento pasado por argumento.
 func (lista *listaEnlazada[T]) InsertarPrimero(elem T) {
 	nuevoNodo := crearNodo[T](elem)
-
 	if lista.EstaVacia() {
-		lista.primero = nuevoNodo
-		lista.ultimo = nuevoNodo
-		lista.largo++
+		lista.insertarSiVacio(nuevoNodo)
 		return
 	}
-	lista.primero.siguiente = lista.primero
+
+	nuevoNodo.siguiente = lista.primero
 	lista.primero = nuevoNodo
 	lista.largo++
 }
 
 // InsertarUltimo inserta al final de la lista el elemento pasado por argumento.
 func (lista *listaEnlazada[T]) InsertarUltimo(elem T) {
-	nuevoNodo := &nodo[T]{
-		dato:      elem,
-		siguiente: nil,
-	}
+	nuevoNodo := crearNodo[T](elem)
 	if lista.EstaVacia() {
-		lista.primero = nuevoNodo
-		lista.ultimo = nuevoNodo
-		lista.largo++
+		lista.insertarSiVacio(nuevoNodo)
 		return
 	}
 	lista.ultimo.siguiente = nuevoNodo
@@ -79,6 +77,10 @@ func (lista *listaEnlazada[T]) BorrarPrimero() T {
 	auxPrimero := lista.primero.dato
 	lista.primero = lista.primero.siguiente
 	lista.largo--
+
+	if lista.largo == 0 {
+		lista.ultimo = nil
+	}
 	return auxPrimero
 }
 
@@ -105,7 +107,7 @@ func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
 	punteroIter := lista.primero
 	for punteroIter != nil {
 		if !visitar(punteroIter.dato) {
-			break //salgo del while y termina la funcion
+			break
 		}
 		punteroIter = punteroIter.siguiente
 	}
