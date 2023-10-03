@@ -126,7 +126,7 @@ func VerPrimeroYUltimo(t *testing.T) {
 }
 
 func TestInsertarPrimeroYBorrar(t *testing.T) {
-	t.Log("Insertamos el dato en la primera posicion, borramos y vemos si cumple con el orden deseado")
+	t.Log("Insertamos el dato en la primera posicion muchas veces, borramos y vemos si cumple con el orden deseado")
 	lista := TDALista.CrearListaEnlazada[int]()
 	lista.InsertarPrimero(1)
 	lista.InsertarPrimero(2)
@@ -136,7 +136,7 @@ func TestInsertarPrimeroYBorrar(t *testing.T) {
 	require.EqualValues(t, 1, lista.VerUltimo())
 }
 func TestInsertarUltimoYBorrar(t *testing.T) {
-	t.Log("Insertamos el dato en la Ultima posicion, borramos y vemos si cumple con el orden desado")
+	t.Log("Insertamos el dato en la Ultima posicion muchas veces, borramos y vemos si cumple con el orden desado")
 	lista := TDALista.CrearListaEnlazada[int]()
 	lista.InsertarUltimo(1)
 	lista.InsertarUltimo(2)
@@ -153,13 +153,18 @@ func TestVolumen(t *testing.T) {
 
 	//Insertar primero
 	for i := 0; i < _VOLUMEN; i++ {
+		require.Equal(t, i, lista.Largo())
 		lista.InsertarPrimero(i)
+		require.False(t, lista.EstaVacia())
+
 		require.EqualValues(t, i, lista.VerPrimero())
 		require.EqualValues(t, 0, lista.VerUltimo())
 
 	}
 	for i := 999; i >= 0; i-- {
+		require.False(t, lista.EstaVacia())
 		require.EqualValues(t, i, lista.BorrarPrimero())
+		require.Equal(t, i, lista.Largo())
 	}
 	// Verificar si se vacio correctamente
 	require.True(t, lista.EstaVacia())
@@ -167,6 +172,7 @@ func TestVolumen(t *testing.T) {
 
 	//Insertar ultimo
 	for i := 0; i < _VOLUMEN; i++ {
+		require.Equal(t, i, lista.Largo())
 		lista.InsertarUltimo(i)
 		require.EqualValues(t, 0, lista.VerPrimero())
 		require.EqualValues(t, i, lista.VerUltimo())
