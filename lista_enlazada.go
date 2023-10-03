@@ -39,21 +39,15 @@ func (lista *listaEnlazada[T]) validarVacio() {
 		panic("La lista esta vacia")
 	}
 }
-func (lista *listaEnlazada[T]) insertarSiVacio(nuevoNodo *nodo[T]) {
-	lista.primero = nuevoNodo
-	lista.ultimo = nuevoNodo
-	lista.largo++
-}
 
 // InsertarPrimero inserta al inicio de la lista el elemento pasado por argumento.
 func (lista *listaEnlazada[T]) InsertarPrimero(elem T) {
 	nuevoNodo := crearNodo[T](elem)
 	if lista.EstaVacia() {
-		lista.insertarSiVacio(nuevoNodo)
-		return
+		lista.ultimo = nuevoNodo
+	} else {
+		nuevoNodo.siguiente = lista.primero
 	}
-
-	nuevoNodo.siguiente = lista.primero
 	lista.primero = nuevoNodo
 	lista.largo++
 }
@@ -62,10 +56,10 @@ func (lista *listaEnlazada[T]) InsertarPrimero(elem T) {
 func (lista *listaEnlazada[T]) InsertarUltimo(elem T) {
 	nuevoNodo := crearNodo[T](elem)
 	if lista.EstaVacia() {
-		lista.insertarSiVacio(nuevoNodo)
-		return
+		lista.primero = nuevoNodo
+	} else {
+		lista.ultimo.siguiente = nuevoNodo
 	}
-	lista.ultimo.siguiente = nuevoNodo
 	lista.ultimo = nuevoNodo
 	lista.largo++
 
