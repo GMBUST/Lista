@@ -835,3 +835,62 @@ func TestRemoverElementoDelMedio(t *testing.T) {
 	iter.Siguiente()
 	require.False(t, iter.HaySiguiente())
 }
+
+func TestIteradorInternoListaCompleta(t *testing.T) {
+	const LIMITE int = 10
+	lista := TDALista.CrearListaEnlazada[int]()
+
+	for i := 1; i <= LIMITE; i++ {
+		lista.InsertarUltimo(i)
+		require.False(t, lista.EstaVacia())
+		require.Equal(t, i, lista.Largo())
+		require.Equal(t, 1, lista.VerPrimero())
+		require.Equal(t, i, lista.VerUltimo())
+	}
+
+	// Itero lista con una función que suma el dato almacenado en el elemento de la lista.
+	suma := 0
+	lista.Iterar(func(dato int) bool {
+		suma += dato
+		return true
+	})
+
+	// Comparo la suma con el resultado esperado.
+	sumaEsperada := LIMITE * (LIMITE + 1) / 2
+
+	require.Equal(t, sumaEsperada, suma)
+}
+
+func TestIteradorInternoBuscarElementos(t *testing.T) {
+	const LIMITE int = 10
+	lista := TDALista.CrearListaEnlazada[int]()
+	elementosBuscados := []int{7, 5, 18, 0, 1, -3, 5, 6}
+	resultadosBusquedaEsperados := []bool{true, true, false, false, true, false, true, true}
+	resultadosBusqueda := []bool{}
+
+	for i := 1; i <= LIMITE; i++ {
+		lista.InsertarUltimo(i)
+		require.False(t, lista.EstaVacia())
+		require.Equal(t, i, lista.Largo())
+		require.Equal(t, 1, lista.VerPrimero())
+		require.Equal(t, i, lista.VerUltimo())
+	}
+
+	// Se le pide buscar ciertos elementos específicos almacenados en un slice.
+	for _, elem := range elementosBuscados {
+		encontrado := false
+
+		lista.Iterar(func(datoAlmacenado int) bool {
+			if datoAlmacenado == elem {
+				encontrado = true
+				return false
+			}
+			return true
+		})
+
+		resultadosBusqueda = append(resultadosBusqueda, encontrado)
+	}
+
+	// Se comparan los resultados de las búsquedas con los esperados.
+	require.Equal(t, resultadosBusquedaEsperados, resultadosBusqueda)
+}
