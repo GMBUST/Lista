@@ -112,7 +112,7 @@ func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
 func (lista *listaEnlazada[T]) Iterador() IteradorLista[T] {
 	nuevoIter := new(iteradorLista[T])
 	nuevoIter.actual = lista.primero
-	nuevoIter.largoLista = &lista.largo
+	nuevoIter.listaAsociada = lista
 	return nuevoIter
 }
 
@@ -120,9 +120,9 @@ func (lista *listaEnlazada[T]) Iterador() IteradorLista[T] {
 
 // Implementación del iterador.
 type iteradorLista[T any] struct {
-	anterior   *nodo[T]
-	actual     *nodo[T]
-	largoLista *int
+	anterior      *nodo[T]
+	actual        *nodo[T]
+	listaAsociada *listaEnlazada[T]
 }
 
 // VerActual devuelve el dato contenido en el elemento la lista en el que se encuentra el iterador.
@@ -146,13 +146,25 @@ func (iter *iteradorLista[T]) Siguiente() {
 func (iter *iteradorLista[T]) Insertar(elem T) {
 	nuevoNodo := crearNodo[T](elem)
 
-	if iter.anterior != nil {
+	if iter.anterior == nil && iter.actual == nil { // Si la lista está vacía.
+		iter.listaAsociada.primero = nuevoNodo
+		iter.listaAsociada.ultimo = nuevoNodo
+	} else if iter.anterior == nil && iter.actual != nil { // Si se inserta al final de la lista.
+		nuevoNodo.siguiente = iter.actual
+		iter.listaAsociada.primero = nuevoNodo
+	} else { // Si se inserta en otro lado.
 		iter.anterior.siguiente = nuevoNodo
-	}
 
-	nuevoNodo.siguiente = iter.actual
+		if iter.actual == nil { // Si se inserta en el final.
+			iter.listaAsociada.ultimo = nuevoNodo
+		} else { // Si no se inserta en los extremos.
+			nuevoNodo.siguiente = iter.actual
+		}
+	}
 	iter.actual = nuevoNodo
-	*iter.largoLista++
+
+	// Se aumenta la cantidad de elementos de la lista.
+	iter.listaAsociada.largo++
 }
 
 // Borrar elimina el elemento de la lista sobre el que se encuentra el iterador.
@@ -160,11 +172,20 @@ func (iter *iteradorLista[T]) Insertar(elem T) {
 func (iter *iteradorLista[T]) Borrar() T {
 	auxNodo := iter.actual
 
-	if iter.anterior != nil {
-		iter.anterior.siguiente = iter.actual
+	if iter.anterior == nil { // Si se encuentra al inicio de la lista.
+		iter.listaAsociada.primero = iter.actual.siguiente
+	} else { // Si no se encuentra al inicio de la lista.
+		iter.anterior.siguiente = iter.actual.siguiente
+
+		if iter.actual == iter.listaAsociada.ultimo { // Si se encuentra al final de la lista.
+			iter.listaAsociada.ultimo = iter.anterior
+		}
 	}
+
 	iter.actual = auxNodo.siguiente
-	*iter.largoLista--
+
+	// Disminuye la cantidad de elementos de la lista.
+	iter.listaAsociada.largo--
 
 	return auxNodo.dato
 }

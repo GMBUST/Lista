@@ -337,10 +337,10 @@ func VerPrimeroYUltimo(t *testing.T) {
 	require.Equal(t, 1, lista.Largo())
 	require.EqualValues(t, 1, lista.VerPrimero())
 	require.EqualValues(t, 1, lista.VerUltimo())
-	
+
 	lista.InsertarPrimero(2)
 	lista.InsertarUltimo(3)
-	
+
 	require.False(t, lista.EstaVacia())
 	require.Equal(t, 3, lista.Largo())
 	require.EqualValues(t, 2, lista.VerPrimero())
@@ -488,12 +488,29 @@ func TestIteradorInsertarAlInicio(t *testing.T) {
 	require.True(t, iter.HaySiguiente())
 	require.Equal(t, 3, iter.VerActual())
 	iter.Siguiente()
-	
+
 	// Verifico cambios en lista:
 	require.False(t, lista.EstaVacia())
 	require.Equal(t, 4, lista.Largo())
 	require.Equal(t, 55, lista.VerPrimero())
 	require.Equal(t, 3, lista.VerUltimo())
+
+	// Iterar lista para verificar que se haya borrado el elemento.
+	iter = lista.Iterador()
+
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 55, iter.VerActual())
+	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 1, iter.VerActual())
+	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 2, iter.VerActual())
+	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 3, iter.VerActual())
+	iter.Siguiente()
+	require.False(t, iter.HaySiguiente())
 }
 
 func TestIteradorInsertarAlFinal(t *testing.T) {
@@ -526,9 +543,9 @@ func TestIteradorInsertarAlFinal(t *testing.T) {
 	require.False(t, iter.HaySiguiente())
 
 	//Inserto al final del iterador
-	iter.Insertar(4)
+	iter.Insertar(7)
 	require.True(t, iter.HaySiguiente())
-	require.Equal(t, 4, iter.VerActual())
+	require.Equal(t, 7, iter.VerActual())
 
 	iter.Siguiente()
 
@@ -538,7 +555,24 @@ func TestIteradorInsertarAlFinal(t *testing.T) {
 	require.False(t, lista.EstaVacia())
 	require.Equal(t, 4, lista.Largo())
 	require.Equal(t, 1, lista.VerPrimero())
-	require.Equal(t, 4, lista.VerUltimo())
+	require.Equal(t, 7, lista.VerUltimo())
+
+	// Iterar lista para verificar que se haya borrado el elemento.
+	iter = lista.Iterador()
+
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 1, iter.VerActual())
+	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 2, iter.VerActual())
+	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 3, iter.VerActual())
+	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 7, iter.VerActual())
+	iter.Siguiente()
+	require.False(t, iter.HaySiguiente())
 }
 
 func TestIteradorInsertarEnElMedio(t *testing.T) {
@@ -586,6 +620,23 @@ func TestIteradorInsertarEnElMedio(t *testing.T) {
 	require.Equal(t, 4, lista.Largo())
 	require.Equal(t, 1, lista.VerPrimero())
 	require.Equal(t, 3, lista.VerUltimo())
+
+	// Iterar lista para verificar que se haya borrado el elemento.
+	iter = lista.Iterador()
+
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 1, iter.VerActual())
+	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 100, iter.VerActual())
+	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 2, iter.VerActual())
+	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 3, iter.VerActual())
+	iter.Siguiente()
+	require.False(t, iter.HaySiguiente())
 }
 func TestRemoverElementoInicioIterador(t *testing.T) {
 	t.Log("Remover elemento cuando el iterador es creado")
@@ -594,13 +645,46 @@ func TestRemoverElementoInicioIterador(t *testing.T) {
 	lista.InsertarUltimo(2)
 	lista.InsertarUltimo(3)
 
+	// Verificar condiciones iniciales de la lista.
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 3, lista.Largo())
+	require.Equal(t, 1, lista.VerPrimero())
+	require.Equal(t, 3, lista.VerUltimo())
+
+	// Crear iterador y verificar estar en el inicio de la pila.
 	iter := lista.Iterador()
+
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 1, iter.VerActual())
+
+	// Borrar elemento.
 	iter.Borrar()
 
+	// Iterar hasta el final de la lista.
+	require.True(t, iter.HaySiguiente())
 	require.Equal(t, 2, iter.VerActual())
 	iter.Siguiente()
 
+	require.True(t, iter.HaySiguiente())
 	require.Equal(t, 3, iter.VerActual())
+	iter.Siguiente()
+
+	// Verificar condiciones finales.
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 2, lista.Largo())
+	require.Equal(t, 2, lista.VerPrimero())
+	require.Equal(t, 3, lista.VerUltimo())
+
+	// Iterar lista para verificar que se haya borrado el elemento.
+	iter = lista.Iterador()
+
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 2, iter.VerActual())
+	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 3, iter.VerActual())
+	iter.Siguiente()
+	require.False(t, iter.HaySiguiente())
 }
 func TestRemoverElementoFinalIterador(t *testing.T) {
 	t.Log("Remover elemento cuando el iterador es llega a su fin")
@@ -609,20 +693,45 @@ func TestRemoverElementoFinalIterador(t *testing.T) {
 	lista.InsertarUltimo(2)
 	lista.InsertarUltimo(3)
 
+	// Verificar condiciones iniciales de la lista.
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 3, lista.Largo())
+	require.Equal(t, 1, lista.VerPrimero())
+	require.Equal(t, 3, lista.VerUltimo())
+
+	// Crear iterador e iterar hasta estar en el final de la lista (sobre el nodo que contiene el número 3).
 	iter := lista.Iterador()
 
+	require.True(t, iter.HaySiguiente())
 	require.Equal(t, 1, iter.VerActual())
 	iter.Siguiente()
-	iter.Siguiente()
-	require.Equal(t, 3, iter.VerActual())
-	iter.Borrar()
-	require.False(t, iter.HaySiguiente())
-	//require.Equal(t, 2, iter.VerActual())
-	iter = lista.Iterador()
-	require.Equal(t, 1, iter.VerActual())
-	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
 	require.Equal(t, 2, iter.VerActual())
 	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 3, iter.VerActual())
+
+	// Borrar elemento.
+	iter.Borrar()
+	// Verificar que se haya borrado.
+	require.False(t, iter.HaySiguiente())
+
+	// Verificar condiciones finales de la lista.
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 2, lista.Largo())
+	require.Equal(t, 1, lista.VerPrimero())
+	require.Equal(t, 2, lista.VerUltimo())
+
+	// Iterar lista para verificar que se haya borrado el elemento.
+	iter = lista.Iterador()
+
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 1, iter.VerActual())
+	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 2, iter.VerActual())
+	iter.Siguiente()
+	require.False(t, iter.HaySiguiente())
 }
 func TestRemoverElementoDelMedio(t *testing.T) {
 	t.Log("Remover elemento cuando esta en el medio y verificar que no esta")
@@ -631,11 +740,42 @@ func TestRemoverElementoDelMedio(t *testing.T) {
 	lista.InsertarUltimo(2)
 	lista.InsertarUltimo(3)
 
+	// Verificar condiciones iniciales de la lista.
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 3, lista.Largo())
+	require.Equal(t, 1, lista.VerPrimero())
+	require.Equal(t, 3, lista.VerUltimo())
+
+	// Crear iterador e iterar hasta estar en el medio de la lista (en el nodo que contiene el número 2).
 	iter := lista.Iterador()
 
+	require.True(t, iter.HaySiguiente())
 	require.Equal(t, 1, iter.VerActual())
 	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 2, iter.VerActual())
+
+	// Borrar elemento.
 	iter.Borrar()
+
+	// Recorrer el resto de la lista.
+	require.Equal(t, 3, iter.VerActual())
+	iter.Siguiente()
+	require.False(t, iter.HaySiguiente())
+
+	// Verificar condiciones finales de la lista.
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 2, lista.Largo())
+	require.Equal(t, 1, lista.VerPrimero())
+	require.Equal(t, 3, lista.VerUltimo())
+
+	// Iterar lista para verificar que se haya borrado el elemento.
+	iter = lista.Iterador()
+
+	require.True(t, iter.HaySiguiente())
+	require.Equal(t, 1, iter.VerActual())
+	iter.Siguiente()
+	require.True(t, iter.HaySiguiente())
 	require.Equal(t, 3, iter.VerActual())
 	iter.Siguiente()
 	require.False(t, iter.HaySiguiente())
