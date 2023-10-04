@@ -37,12 +37,14 @@ type Lista[T any] interface {
 type IteradorLista[T any] interface {
 
 	// VerActual devuelve el dato contenido en el elemento la lista en el que se encuentra el iterador.
+	// Si se intenta utilizar la función cuando no hay un dato para ver se genera un panic con el mensaje "El iterador termino de iterar".
 	VerActual() T
 
 	// HaySiguiente indica si hay algún elemento para ver.
 	HaySiguiente() bool
 
 	// Siguiente hace que el iterador avance al siguiente elemento de la lista.
+	// Si se intenta utilizar la función cuando no hay más elementos para iterar se genera un panic con el mensaje "El iterador termino de iterar".
 	Siguiente()
 
 	// Insertar inserta un elemento nuevo en la lista entre el elemento en el que se encuentra el iterador y el anterior a ese.
@@ -51,5 +53,6 @@ type IteradorLista[T any] interface {
 
 	// Borrar elimina el elemento de la lista sobre el que se encuentra el iterador.
 	// Luego de borrarlo el iterador se posiciona sobre el elemento siguiente al elemento que se borra de la lista.
+	// Si se intenta utilizar la función cuando no hay un dato para borrar se genera un panic con el mensaje "El iterador termino de iterar".
 	Borrar() T
 }

@@ -127,6 +127,9 @@ type iteradorLista[T any] struct {
 
 // VerActual devuelve el dato contenido en el elemento la lista en el que se encuentra el iterador.
 func (iter *iteradorLista[T]) VerActual() T {
+	if iter.actual == nil {
+		panic("El iterador termino de iterar")
+	}
 	return iter.actual.dato
 }
 
@@ -137,6 +140,9 @@ func (iter *iteradorLista[T]) HaySiguiente() bool {
 
 // Siguiente hace que el iterador avance al siguiente elemento de la lista.
 func (iter *iteradorLista[T]) Siguiente() {
+	if iter.actual == nil {
+		panic("El iterador termino de iterar")
+	}
 	iter.anterior = iter.actual
 	iter.actual = iter.actual.siguiente
 }
@@ -170,10 +176,18 @@ func (iter *iteradorLista[T]) Insertar(elem T) {
 // Borrar elimina el elemento de la lista sobre el que se encuentra el iterador.
 // Luego de borrarlo el iterador se posiciona sobre el elemento siguiente al elemento que se borra de la lista.
 func (iter *iteradorLista[T]) Borrar() T {
+	if iter.actual == nil {
+		panic("El iterador termino de iterar")
+	}
+
 	auxNodo := iter.actual
 
 	if iter.anterior == nil { // Si se encuentra al inicio de la lista.
 		iter.listaAsociada.primero = iter.actual.siguiente
+
+		if iter.actual == iter.listaAsociada.ultimo { // Si la lista tiene un único elemento
+			iter.listaAsociada.ultimo = iter.actual.siguiente
+		}
 	} else { // Si no se encuentra al inicio de la lista.
 		iter.anterior.siguiente = iter.actual.siguiente
 
