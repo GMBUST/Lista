@@ -347,34 +347,89 @@ func VerPrimeroYUltimo(t *testing.T) {
 	require.EqualValues(t, 3, lista.VerUltimo())
 }
 
-func TestInsertarPrimeroYBorrar(t *testing.T) {
-	t.Log("Insertamos el dato en la primera posicion muchas veces, borramos y vemos si cumple con el orden deseado")
+func TestInsertarPocosValores(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
 
+	require.True(t, lista.EstaVacia())
+	require.Equal(t, 0, lista.Largo())
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() })
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerUltimo() })
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() })
+
 	lista.InsertarPrimero(1)
+
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 1, lista.Largo())
+	require.Equal(t, 1, lista.VerPrimero())
+	require.Equal(t, 1, lista.VerUltimo())
+
+	require.Equal(t, 1, lista.BorrarPrimero())
+
+	require.True(t, lista.EstaVacia())
+	require.Equal(t, 0, lista.Largo())
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() })
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerUltimo() })
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() })
+
 	lista.InsertarPrimero(2)
-	lista.InsertarPrimero(3)
+
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 1, lista.Largo())
+	require.Equal(t, 2, lista.VerPrimero())
+	require.Equal(t, 2, lista.VerUltimo())
+
+	lista.InsertarUltimo(3)
+
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 2, lista.Largo())
+	require.Equal(t, 2, lista.VerPrimero())
+	require.Equal(t, 3, lista.VerUltimo())
+
+	lista.InsertarPrimero(4)
 
 	require.False(t, lista.EstaVacia())
 	require.Equal(t, 3, lista.Largo())
+	require.Equal(t, 4, lista.VerPrimero())
+	require.Equal(t, 3, lista.VerUltimo())
+
+	require.Equal(t, 4, lista.BorrarPrimero())
+
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 2, lista.Largo())
+	require.Equal(t, 2, lista.VerPrimero())
+	require.Equal(t, 3, lista.VerUltimo())
+
+	lista.InsertarUltimo(5)
+	lista.InsertarUltimo(6)
+
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 4, lista.Largo())
+	require.Equal(t, 2, lista.VerPrimero())
+	require.Equal(t, 6, lista.VerUltimo())
+
+	lista.InsertarPrimero(7)
+
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 5, lista.Largo())
+	require.Equal(t, 7, lista.VerPrimero())
+	require.Equal(t, 6, lista.VerUltimo())
+
+	require.Equal(t, 7, lista.BorrarPrimero())
+	require.Equal(t, 2, lista.BorrarPrimero())
 	require.Equal(t, 3, lista.BorrarPrimero())
-	require.EqualValues(t, 2, lista.VerPrimero())
-	require.EqualValues(t, 1, lista.VerUltimo())
 
-}
-func TestInsertarUltimoYBorrar(t *testing.T) {
-	t.Log("Insertamos el dato en la Ultima posicion muchas veces, borramos y vemos si cumple con el orden desado")
-	lista := TDALista.CrearListaEnlazada[int]()
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 2, lista.Largo())
+	require.Equal(t, 5, lista.VerPrimero())
+	require.Equal(t, 6, lista.VerUltimo())
 
-	lista.InsertarUltimo(1)
-	lista.InsertarUltimo(2)
-	lista.InsertarUltimo(3)
-
-	lista.BorrarPrimero()
-
-	require.EqualValues(t, 2, lista.VerPrimero())
-	require.EqualValues(t, 3, lista.VerUltimo())
-
+	require.Equal(t, 5, lista.BorrarPrimero())
+	require.Equal(t, 6, lista.BorrarPrimero())
+	require.True(t, lista.EstaVacia())
+	require.Equal(t, 0, lista.Largo())
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() })
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerUltimo() })
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() })
 }
 
 func TestVolumen(t *testing.T) {
