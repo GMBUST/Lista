@@ -140,11 +140,13 @@ func (iter *iteradorLista[T]) HaySiguiente() bool {
 
 // Siguiente hace que el iterador avance al siguiente elemento de la lista.
 func (iter *iteradorLista[T]) Siguiente() {
-	if iter.actual == nil {
+
+	if !iter.HaySiguiente() {
 		panic("El iterador termino de iterar")
 	}
 	iter.anterior = iter.actual
 	iter.actual = iter.actual.siguiente
+
 }
 
 // Insertar inserta un elemento nuevo en la lista entre el elemento en el que se encuentra el iterador y el anterior a ese.
@@ -152,11 +154,11 @@ func (iter *iteradorLista[T]) Siguiente() {
 func (iter *iteradorLista[T]) Insertar(elem T) {
 	nuevoNodo := crearNodo[T](elem)
 
-	if iter.anterior == nil && iter.actual == nil { // Si la lista está vacía.
+	if iter.listaAsociada.EstaVacia() { // Si la lista está vacía.
 		iter.listaAsociada.primero = nuevoNodo
 		iter.listaAsociada.ultimo = nuevoNodo
-	} else if iter.anterior == nil && iter.actual != nil { // Si se inserta al final de la lista.
-		nuevoNodo.siguiente = iter.actual
+	} else if iter.anterior == nil && iter.actual != nil { // Si se inserta al comienzo de la lista.
+		nuevoNodo.siguiente = iter.listaAsociada.primero
 		iter.listaAsociada.primero = nuevoNodo
 	} else { // Si se inserta en otro lado.
 		iter.anterior.siguiente = nuevoNodo

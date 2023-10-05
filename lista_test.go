@@ -837,7 +837,20 @@ func TestIterInsertarFinalLista(t *testing.T) {
 }
 
 func TestInsercionesYBorrados(t *testing.T) {
+	const LIMITE int = 10
+	lista := TDALista.CrearListaEnlazada[int]()
 
+	iter := lista.Iterador()
+
+	// Insertar elementos con el iterador
+	for i := 1; i <= LIMITE; i++ {
+		iter.Insertar(i)
+		require.Equal(t, i, iter.VerActual())
+		iter.Borrar()
+		require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.VerActual() })
+		require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Siguiente() })
+		require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Borrar() })
+	}
 }
 
 func TestIterInsercionesPrincipioVolumen(t *testing.T) {
@@ -909,6 +922,40 @@ func TestIterInsercionesPrincipioVolumen(t *testing.T) {
 }
 
 func TestIterInsercionesFinalVolumen(t *testing.T) {
+	const LIMITE int = 10000
+	lista := TDALista.CrearListaEnlazada[int]()
+
+	iter := lista.Iterador()
+
+	require.False(t, iter.HaySiguiente())
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.VerActual() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Siguiente() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Borrar() })
+
+	// Insertar elementos.
+	for i := 1; i <= LIMITE; i++ {
+		iter.Insertar(i)
+		require.True(t, iter.HaySiguiente())
+		require.Equal(t, i, iter.VerActual())
+	}
+
+	//Itero hasta el final
+	iter = lista.Iterador()
+	for iter.HaySiguiente() {
+		iter.Siguiente()
+	}
+	// Inserto elementos al final del iterador
+	for i := LIMITE + 1; i <= LIMITE; i++ {
+		iter.Insertar(i)
+		iter.Siguiente()
+		require.Equal(t, i, iter.VerActual())
+	}
+
+	// Verifico que el iterador haya llegado al final.
+	require.False(t, iter.HaySiguiente())
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.VerActual() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Siguiente() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Borrar() })
 
 }
 
